@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html>
+<head>
+ 	<meta charset="UTF-8" />
+    <title>Ray White Technical Test</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+
+<body>
+  <h1>Ray White</h1>
+  <div id="app" class="container">
+    <h2>Agent Details</h2>
+    <span class="full-name"></span><br/>
+    <span class="email"></span><br/>
+    <span class="phone"></span><br/>
+    <h2>Listings</h2>
+    <div id="properties">
+
+    </div>
+  </div>
+  <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+
+  <script>
+  $.ajax({
+    xhrFields: {
+      withCredentials: false
+    },
+    type: "GET",
+    url: "http://rwdcc.herokuapp.com/agents"
+  }).done(function (data) {
+    var agentId = data[0];
+
+    $.ajax({
+      xhrFields: {
+        withCredentials: false
+      },
+      type: "GET",
+      url: "http://rwdcc.herokuapp.com/agents/" + agentId
+    }).done(function (data) {
+     $('.full-name').append(data["fullName"]);
+     $('.email').append(data["email"]);
+     $('.phone').append(data["mobilePhone"]);
+
+      $.ajax({
+        xhrFields: {
+          withCredentials: false
+        },
+        type: "GET",
+        url: "http://rwdcc.herokuapp.com/agents/"+agentId+"/listings"
+      }).done(function (data) {
+        for (var i = 0; i < data.length; i++) {
+          $('#properties').append('<div>' + data[i]["type"] + '</div><div>' + data[i]["title"] + '</div><div>Price Guide: ' + data[i]["price"] + '</div><div>Property ID: ' + data[i]["id"] + '</div><div>No of Bathrooms: ' + data[i]["bathrooms"] + '</div><div>No of Bedrooms: ' + data[i]["bedrooms"] + '</div><div>No of car spaces: ' + data[i]["carSpaces"] + '</div><div>Description: ' + data[i]["description"] + '</div><hr/>'
+        );
+        }
+      });
+    });
+  });
+
+  </script>
+</body>
+</html>
